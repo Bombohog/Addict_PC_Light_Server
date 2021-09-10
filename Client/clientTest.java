@@ -19,8 +19,8 @@ public class MyClient {
               String temp = inputStream.readByte(); 
               String humi = inputStream.readByte(); 
                
-              System.out.println(temp)
-              System.out.println(humi)
+              System.out.println(temp);
+              System.out.println(humi);
                   
             }
                 
