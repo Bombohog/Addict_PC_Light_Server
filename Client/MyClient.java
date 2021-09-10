@@ -9,7 +9,7 @@ public class MyClient {
 
         try {
 
-            Socket socket = new Socket("10.200.130.31", 8001);
+            Socket socket = new Socket("10.0.0.226", 8001);
 
             DataInputStream inputStream = new DataInputStream(socket.getInputStream());
             //DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());

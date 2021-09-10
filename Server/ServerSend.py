@@ -15,7 +15,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
         while True:
             humidity, temperature = Adafruit_DHT.read_retry(11, 4)
-
+            print(str(temperature).encode())
+            print(str(humidity).encode())
            #send temperature
             conn.send(str(temperature).encode())
   
