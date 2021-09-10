@@ -16,11 +16,14 @@ public class ClientTest {
             // Scanner sc = new Scanner(System.in);
             while (true) {
                  
-              String temp = inputStream.readByte(); 
-              String humi = inputStream.readByte(); 
+              byte temp = inputStream.readByte();
+              byte humi = inputStream.readByte();
+              
+              String tempUTF = new String(temp, StandardCharsets.US_ASCII);
+              String humiUTF = new String(humi, StandardCharsets.US_ASCII);
                
-              System.out.println(temp);
-              System.out.println(humi);
+              System.out.println(tempUTF);
+              System.out.println(humiUTF);
                   
             }
                 
