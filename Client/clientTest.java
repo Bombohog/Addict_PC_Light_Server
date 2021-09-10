@@ -21,7 +21,7 @@ public class MyClient {
                
               System.out.println(temp)
               System.out.println(humi)
-                }
+                
         } catch (Exception e) {
             e.printStackTrace();
         }
