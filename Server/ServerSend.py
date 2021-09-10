@@ -1,3 +1,4 @@
+import json
 import socket
 import time
 
@@ -18,8 +19,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             print(str(temperature).encode())
             print(str(humidity).encode())
            #send temperature
-            conn.send(str(temperature).encode())
-  
+            Jsonfile = {humidity:temperature}
+            Jsonfile = json.dumps(Jsonfile)
+            conn.send(Jsonfile)
+
           #send humidity  
-            conn.send(str(humidity).encode()) 
+            #conn.send(str(humidity).encode())
 
