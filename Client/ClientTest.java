@@ -3,24 +3,24 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class clientTest {
+public class ClientTest {
 
     public static void main(String[] args) throws IOException {
 
         try {
 
-            Socket socket = new Socket("10.0.0.226", 8001);
+            Socket socket = new Socket("10.200.130.31", 8001);
 
             DataInputStream inputStream = new DataInputStream(socket.getInputStream());
          
             // Scanner sc = new Scanner(System.in);
             while (true) {
                  
-              byte temp = inputStream.readByte();
-              byte humi = inputStream.readByte();
+              String temp = inputStream.readByte(); 
+              String humi = inputStream.readByte(); 
                
-              System.out.println("Temp " + temp);
-              System.out.println("Humi " + humi);
+              System.out.println(temp);
+              System.out.println(humi);
                   
             }
                 
