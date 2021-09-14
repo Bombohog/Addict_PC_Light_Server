@@ -1,3 +1,4 @@
+import os
 import socket
 import time
 import Adafruit_DHT
@@ -13,11 +14,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             humidity, temperature = Adafruit_DHT.read_retry(11, 4)
             if flip:
                 n = len(str(humidity))
-
                 nString = str(n).encode()
-
                 conn.send(bytes(nString))
-
                 conn.send(bytes(str(humidity).encode()))
                 flip = False
             else:
