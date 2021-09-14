@@ -23,4 +23,4 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 conn.send(bytes(str(n).encode()))
                 conn.send(bytes(str(temperature).encode()))
                 flip = True
-            time.sleep(2)
+            time.sleep(1)
