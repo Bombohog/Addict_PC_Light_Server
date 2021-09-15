@@ -1,4 +1,5 @@
 # Addict_PC_Light_Server
+![](res/Screenshot.png)
 
 This project contains a python server on a raspberry pi and a java client on another device communicating.
 
