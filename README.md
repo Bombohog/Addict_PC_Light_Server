@@ -22,7 +22,7 @@ brugere hvis dataen afviger for meget og dermed kræver deres invendelse.
 
 
 ## Developers
-Anders Hjordrup Larsen
-Fredrik Bille
-Chilas Dipo
+Anders Hjordrup Larsen <br>
+Fredrik Bille <br>
+Chilas Dipo <br>
 Lasse Jørgensen Kongsdal
