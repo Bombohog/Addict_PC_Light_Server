@@ -1,5 +1,7 @@
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
@@ -9,6 +11,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import java.io.DataInputStream;
 import java.net.Socket;
@@ -53,7 +58,7 @@ public class ClientForSensorDataGraph extends Application {
     public void start(Stage primaryStage) {
         new Thread(() -> {
             try {
-                Socket socket = new Socket("10.0.0.226", 8001);
+                Socket socket = new Socket("10.200.130.31", 8001);
                 DataInputStream inputStream = new DataInputStream(socket.getInputStream());
                 while (true) {
                     byte[] lenghtbytearray = (inputStream.readNBytes(1));
@@ -92,9 +97,6 @@ public class ClientForSensorDataGraph extends Application {
 
         setupUI();
 
-        FlowPane pane = new FlowPane(linechartForHumity, linechartForTempeture);
-
-
         Label minTemperature = new Label("Lavest temperatur ");
         Label maxTemperature = new Label("Højeste temperatur ");
         Label avgTemperature = new Label("Gennemsnitlig temperatur ");
@@ -103,14 +105,29 @@ public class ClientForSensorDataGraph extends Application {
         Label avgHumidity = new Label("Gennemsnitlig Luftfugtighed");
 
 
+        avgHumidity.setFont(Font.font("calibri", FontWeight.NORMAL, 15));
+        maxHumidity.setFont(Font.font("calibri", FontWeight.NORMAL, 15));
+        minHumidity.setFont(Font.font("calibri", FontWeight.NORMAL, 15));
+        avgTemperature.setFont(Font.font("calibri", FontWeight.NORMAL, 15));
+        minTemperature.setFont(Font.font("calibri", FontWeight.NORMAL, 15));
+        maxTemperature.setFont(Font.font("calibri", FontWeight.NORMAL, 15));
 
-        VBox vbox2 = new VBox(minTemperature,maxTemperature,avgTemperature,minHumidity,maxHumidity,avgHumidity);
-        VBox vbox3 = new VBox(minTemperatureValue,maxTemperatureValue,avgTemperatureValue,minHumidityValue,maxHumidityValue,avgHumidityValue);
-         HBox hBox = new HBox(vbox2,vbox3);
 
-        VBox vbox = new VBox(pane,hBox);
+        VBox labelsForTemperature = new VBox(minTemperature,maxTemperature,avgTemperature);
+        VBox labelsForHumidity = new VBox(minHumidity,maxHumidity,avgHumidity);
+        VBox valuesForTemperature = new VBox(minTemperatureValue,maxTemperatureValue,avgTemperatureValue);
+        VBox valuesForHumidity = new VBox(minHumidityValue,maxHumidityValue,avgHumidityValue);
+        HBox labelAndValuesTemperature = new HBox(labelsForTemperature, valuesForTemperature);
+        HBox labelAndValuesHumidity = new HBox(labelsForHumidity, valuesForHumidity);
+        labelAndValuesHumidity.setAlignment(Pos.CENTER);
+        labelAndValuesTemperature.setAlignment(Pos.CENTER);
+        VBox graphAndLabelContainerHumidity = new VBox(linechartForHumity,labelAndValuesHumidity);
+        VBox graphAndLabelContainerTemperature = new VBox(linechartForTempeture,labelAndValuesTemperature );
 
-        Scene scene = new Scene(vbox, 900, 800);
+
+
+        HBox hbox = new HBox(graphAndLabelContainerHumidity,graphAndLabelContainerTemperature);
+        Scene scene = new Scene(hbox, 900, 500);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -136,6 +153,35 @@ public class ClientForSensorDataGraph extends Application {
         linechartForTempeture.setPrefSize(400,400);
         linechartForHumity.getData().add(humidityDataSet);
         linechartForTempeture.getData().add(tempeturDataSet);
+
+
+
+        maxTemperatureValue.setFont(Font.font("calibri", FontWeight.BOLD, 15 ));
+        minTemperatureValue.setFont(Font.font("calibri", FontWeight.BOLD, 15 ));
+        avgTemperatureValue.setFont(Font.font("calibri", FontWeight.BOLD, 15 ));
+        minHumidityValue.setFont(Font.font("calibri", FontWeight.BOLD, 15 ));
+        maxHumidityValue.setFont(Font.font("calibri", FontWeight.BOLD, 15 ));
+        avgHumidityValue.setFont(Font.font("calibri", FontWeight.BOLD, 15 ));
+
+        minHumidityValue.setPadding(new Insets(0,0,0,20));
+        maxHumidityValue.setPadding(new Insets(0,0,0,20));
+        avgHumidityValue.setPadding(new Insets(0,0,0,20));
+        minTemperatureValue.setPadding(new Insets(0,0,0,20));
+        maxTemperatureValue.setPadding(new Insets(0,0,0,20));
+        avgTemperatureValue.setPadding(new Insets(0,0,0,20));
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
     void updateLabels(){
