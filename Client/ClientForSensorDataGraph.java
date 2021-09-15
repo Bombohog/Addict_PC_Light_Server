@@ -8,11 +8,9 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import java.io.DataInputStream;
@@ -20,22 +18,19 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 public class ClientForSensorDataGraph extends Application {
     final CategoryAxis xAxisForHumidity = new CategoryAxis();
     final NumberAxis yAxisForHumidity = new NumberAxis();
-
     final CategoryAxis xAxisForTemperature = new CategoryAxis();
     final NumberAxis yAxisForTemperature = new NumberAxis();
     ArrayList<Double> listOfHumidityValues = new ArrayList<>();
     ArrayList<Double> listOfTemperatureValues = new ArrayList<>();
-    final LineChart<String, Number> linechartForHumity = new LineChart<String, Number>(xAxisForHumidity, yAxisForHumidity);
-    final LineChart<String, Number> linechartForTempeture = new LineChart<String, Number>(xAxisForTemperature, yAxisForTemperature);
-    XYChart.Series<String, Number> humidityDataSet = new XYChart.Series<String, Number>();
-    XYChart.Series<String, Number> tempeturDataSet = new XYChart.Series<String, Number>();
+    final LineChart<String, Number> linechartForHumity = new LineChart<>(xAxisForHumidity, yAxisForHumidity);
+    final LineChart<String, Number> linechartForTempeture = new LineChart<>(xAxisForTemperature, yAxisForTemperature);
+    XYChart.Series<String, Number> humidityDataSet = new XYChart.Series<>();
+    XYChart.Series<String, Number> tempeturDataSet = new XYChart.Series<>();
     final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
     final int AMOUNTOFNOTES = 20;
     static boolean tempeturOrNot = false;
@@ -61,8 +56,8 @@ public class ClientForSensorDataGraph extends Application {
                 Socket socket = new Socket("10.200.130.31", 8001);
                 DataInputStream inputStream = new DataInputStream(socket.getInputStream());
                 while (true) {
-                    byte[] lenghtbytearray = (inputStream.readNBytes(1));
-                    String StringVersionOfn = new String(lenghtbytearray, StandardCharsets.UTF_8);
+                    byte[] lenghtOfByteArray = (inputStream.readNBytes(1));
+                    String StringVersionOfn = new String(lenghtOfByteArray, StandardCharsets.UTF_8);
                     int n = Integer.parseInt(StringVersionOfn);
                     byte[] bytearray = (inputStream.readNBytes(n));
                     String sensorData = new String(bytearray, StandardCharsets.UTF_8);
@@ -86,8 +81,6 @@ public class ClientForSensorDataGraph extends Application {
                             monotoniforhold();
                             updateLabels();
                         }
-
-
                     });
                 }
             } catch (Exception e) {
@@ -103,7 +96,6 @@ public class ClientForSensorDataGraph extends Application {
         Label minHumidity = new Label("Lavest Luftfugtighed");
         Label maxHumidity = new Label("Højeste Luftfugtighed");
         Label avgHumidity = new Label("Gennemsnitlig Luftfugtighed");
-
 
         avgHumidity.setFont(Font.font("calibri", FontWeight.NORMAL, 15));
         maxHumidity.setFont(Font.font("calibri", FontWeight.NORMAL, 15));
@@ -123,10 +115,8 @@ public class ClientForSensorDataGraph extends Application {
         labelAndValuesTemperature.setAlignment(Pos.CENTER);
         VBox graphAndLabelContainerHumidity = new VBox(linechartForHumity,labelAndValuesHumidity);
         VBox graphAndLabelContainerTemperature = new VBox(linechartForTempeture,labelAndValuesTemperature );
-
-
-
         HBox hbox = new HBox(graphAndLabelContainerHumidity,graphAndLabelContainerTemperature);
+
         Scene scene = new Scene(hbox, 900, 500);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -154,8 +144,6 @@ public class ClientForSensorDataGraph extends Application {
         linechartForHumity.getData().add(humidityDataSet);
         linechartForTempeture.getData().add(tempeturDataSet);
 
-
-
         maxTemperatureValue.setFont(Font.font("calibri", FontWeight.BOLD, 15 ));
         minTemperatureValue.setFont(Font.font("calibri", FontWeight.BOLD, 15 ));
         avgTemperatureValue.setFont(Font.font("calibri", FontWeight.BOLD, 15 ));
@@ -169,19 +157,6 @@ public class ClientForSensorDataGraph extends Application {
         minTemperatureValue.setPadding(new Insets(0,0,0,20));
         maxTemperatureValue.setPadding(new Insets(0,0,0,20));
         avgTemperatureValue.setPadding(new Insets(0,0,0,20));
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
     void updateLabels(){
@@ -194,7 +169,6 @@ public class ClientForSensorDataGraph extends Application {
     }
 
     void monotoniforhold(){
-
         if (minForHumidity > listOfHumidityValues.get(listOfHumidityValues.size()-1)){
             minForHumidity = listOfHumidityValues.get(listOfHumidityValues.size()-1);
         }
@@ -220,11 +194,9 @@ public class ClientForSensorDataGraph extends Application {
 
         avgForHumidity =avgForHumidityBeforeDevide/listOfHumidityValues.size();
         avgForTemperature = avgForTemperatureBeforeDevide/listOfTemperatureValues.size();
-
     }
 
     public static void main(String[] args) {
         launch(args);
-
     }
 }

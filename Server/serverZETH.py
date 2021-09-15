@@ -30,9 +30,3 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 s.close()
                 print("Works")
                 os.system("python3 server.py")
-
-
-
-
-
-
