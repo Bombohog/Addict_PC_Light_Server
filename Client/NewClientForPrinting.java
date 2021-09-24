@@ -6,6 +6,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.DataInputStream;
 import java.net.Socket;
@@ -40,9 +41,23 @@ public class NewClientForPrinting {
                 DataInputStream inputStream = new DataInputStream(socket.getInputStream());
                 while (true) {
 
-                   String encryptedString = new String(inputStream.readNBytes(16),StandardCharsets.UTF_8);
+                    byte[] lenghtOfByteArray = (inputStream.readNBytes(1));
+                    String StringVersionOfn = new String(lenghtOfByteArray, StandardCharsets.UTF_8);
+                    int n1 = Integer.parseInt(StringVersionOfn);
+                    lenghtOfByteArray = (inputStream.readNBytes(2));
+                    StringVersionOfn = new String(lenghtOfByteArray, StandardCharsets.UTF_8);
+                    int n2 = Integer.parseInt(StringVersionOfn);
 
-                    System.out.println(encryptedString);
+                    byte[] bytearray = (inputStream.readNBytes(n2));
+
+
+                    String output = decrypt(bytearray);
+
+                    System.out.println(output);
+
+
+                    //System.out.println( decrypt(inputStream.readNBytes(16)));
+
                 }
             }catch (Exception e) {
                 e.printStackTrace();
@@ -50,23 +65,24 @@ public class NewClientForPrinting {
         }).start();
     }
 
-    static int decrypt(String stringToDecrypt){
+    public static String decrypt(byte[] encrypted) {
+        try {
+            System.out.println("length" + encrypted.length);
+            String encryptedString = "testtesttesttest";
+            String key = "testtesttesttest";
+            byte[] tempbytearray = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+            IvParameterSpec iv = new IvParameterSpec(tempbytearray);
+            SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES");
 
-        try{
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
-            byte[] key;
-            String mykey = "testtesttesttest";
-            key = mykey.getBytes(StandardCharsets.UTF_8);
-            SecretKeySpec secretKeySpec = new SecretKeySpec(key,"AES");
-            cipher.init(Cipher.DECRYPT_MODE,secretKeySpec);
-            return Integer.parseInt(new String(cipher.doFinal(Base64.getDecoder().decode(stringToDecrypt))));
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-            e.printStackTrace();
+            Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
+            cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
+            byte[] original = cipher.doFinal(encrypted);
+            return new String(original);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        return 1;
+
+        return null;
     }
+
 }
-
-
