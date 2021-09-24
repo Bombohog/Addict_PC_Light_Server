@@ -13,11 +13,20 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.DataInputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 
 public class ClientForSensorDataGraph extends Application {
@@ -53,7 +62,7 @@ public class ClientForSensorDataGraph extends Application {
     public void start(Stage primaryStage) {
         new Thread(() -> {
             try {
-                Socket socket = new Socket("10.200.130.31", 8001);
+                Socket socket = new Socket("10.0.0.165", 8001);
                 DataInputStream inputStream = new DataInputStream(socket.getInputStream());
                 while (true) {
                     byte[] lenghtOfByteArray = (inputStream.readNBytes(1));
@@ -194,6 +203,23 @@ public class ClientForSensorDataGraph extends Application {
 
         avgForHumidity =avgForHumidityBeforeDevide/listOfHumidityValues.size();
         avgForTemperature = avgForTemperatureBeforeDevide/listOfTemperatureValues.size();
+    }
+
+    Double decrypt(String stringToDecrypt){
+        try{
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
+            byte[] key;
+            String mykey = "testtesttesttest";
+            key = mykey.getBytes(StandardCharsets.UTF_8);
+            SecretKeySpec secretKeySpec = new SecretKeySpec(key,"AES");
+            cipher.init(Cipher.DECRYPT_MODE,secretKeySpec);
+            return Double.parseDouble(new String(cipher.doFinal(Base64.getDecoder().decode(stringToDecrypt))));
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+            e.printStackTrace();
+        }
+        return 1.0;
     }
 
     public static void main(String[] args) {
