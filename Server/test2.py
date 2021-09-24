@@ -1,5 +1,3 @@
-import time
-
 from Crypto.Cipher import AES
 from Crypto import Random
 import base64
@@ -11,21 +9,6 @@ block_size = AES.block_size
 HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
 PORT = 8001  # Port to listen on (non-privileged ports are > 1023)
 
-def sender():
-    key='sixteencharacter'
-    plain='secret 25 of 63 length'
-    plain = pad(plain)
-    iv = 'jvHJ1XFt0IXBrxxx'
-
-    cipher = AES.new(key, AES.MODE_CBC, iv)
-    encrypted_bytes = cipher.encrypt(plain)
-
-    encrypted_text = base64.urlsafe_b64encode(encrypted_bytes).decode("utf-8")
-
-    print('Encrypted Text: ' + encrypted_text)
-    conn.send(bytes(encrypted_text.encode()))
-    time.sleep(1)
-    sender()
 #unpad = lambda s : s[0:-ord(s[-1])]
 def pad(plain_text):
     """
@@ -45,7 +28,20 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     conn, addr = s.accept()
     with conn:
         try:
-            sender()
+
+            key='sixteencharacter'
+            plain='secret message of any length'
+            plain = pad(plain)
+
+            iv = 'jvHJ1XFt0IXBrxxx'
+
+            cipher = AES.new(key, AES.MODE_CBC, iv)
+            encrypted_bytes = cipher.encrypt(plain)
+
+            encrypted_text = base64.urlsafe_b64encode(encrypted_bytes).decode("utf-8")
+
+            print('Encrypted Text: ' + encrypted_text)
+            conn.send(encrypted_text.encode())
 
         except ConnectionResetError:
             conn.close()

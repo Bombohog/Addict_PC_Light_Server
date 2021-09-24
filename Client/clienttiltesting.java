@@ -41,6 +41,8 @@ public class clienttiltesting {
 
     public static void main(String[] args) throws IOException {
 
+
+
         try {
 
             reciver();
@@ -65,6 +67,9 @@ public class clienttiltesting {
     }
 
     static void reciver() throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InterruptedException {
+
+        Socket socket = new Socket("10.0.0.165", 8001);
+        DataInputStream inputStream = new DataInputStream(socket.getInputStream());
 
         IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
         SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
