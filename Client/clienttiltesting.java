@@ -5,6 +5,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.security.InvalidAlgorithmParameterException;
@@ -16,24 +17,15 @@ public class clienttiltesting {
     static String key = "sixteencharacter";
    static  String initVector = "jvHJ1XFt0IXBrxxx";
 
-
-
-
     static Socket socket;
+    static DataInputStream inputStream;
+    static DataOutputStream outputStream;
 
     static {
         try {
             socket = new Socket("10.0.0.165", 8001);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    static DataInputStream inputStream;
-
-    static {
-        try {
             inputStream = new DataInputStream(socket.getInputStream());
+            outputStream= new DataOutputStream(socket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,10 +33,10 @@ public class clienttiltesting {
 
     public static void main(String[] args) throws IOException {
 
-
+        //Socket socket = new Socket("10.0.0.165", 8001);
+        //DataInputStream inputStream = new DataInputStream(socket.getInputStream());
 
         try {
-
             reciver();
         } catch (IOException e) {
             e.printStackTrace();
@@ -68,26 +60,27 @@ public class clienttiltesting {
 
     static void reciver() throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InterruptedException {
 
-        Socket socket = new Socket("10.0.0.165", 8001);
-        DataInputStream inputStream = new DataInputStream(socket.getInputStream());
+        outputStream.writeUTF("");
 
         IvParameterSpec iv = new IvParameterSpec(initVector.getBytes("UTF-8"));
         SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
-
-        //  String encryptedString = new String(inputStream.readNBytes(16),StandardCharsets.UTF_8);
-        byte[] inputfromserver = inputStream.readAllBytes();
-
-        String output = new String(inputfromserver);
-
-
-
         Cipher cipherd = Cipher.getInstance("AES/CBC/PKCS5PADDING");
         cipherd.init(Cipher.DECRYPT_MODE, skeySpec, iv);
+
+        byte[] inputfromserver = inputStream.readNBytes(24);
+        String output = new String(inputfromserver);
+
         byte[] original = cipherd.doFinal(Base64.getUrlDecoder().decode(output));
         String decryptedResult = new String(original);
         System.out.println("Decrypted string: " + decryptedResult);
 
-        System.out.println(output);
+        //String value = decryptedResult.replaceAll("[^0-9]&&[^.]","");
+        //    System.out.println("Tallet er " + value);
+
+        String[] stringarray = decryptedResult.split("[,]");
+        double humi = Double.parseDouble(stringarray[1]);
+        double temp = Double.parseDouble(stringarray[0]);
+        System.out.println("temp er " + temp + "    humi er " + humi);
         Thread.sleep(1000);
         reciver();
 

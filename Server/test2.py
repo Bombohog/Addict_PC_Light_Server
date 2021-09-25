@@ -1,13 +1,12 @@
 from Crypto.Cipher import AES
-from Crypto import Random
 import base64
-import random
-import os
 import socket
+import Adafruit_DHT
 
 block_size = AES.block_size
 HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
 PORT = 8001  # Port to listen on (non-privileged ports are > 1023)
+tal = 1
 
 #unpad = lambda s : s[0:-ord(s[-1])]
 def pad(plain_text):
@@ -28,21 +27,19 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     conn, addr = s.accept()
     with conn:
         try:
-
-            key='sixteencharacter'
-            plain='secret message of any length'
-            plain = pad(plain)
-
-            iv = 'jvHJ1XFt0IXBrxxx'
-
-            cipher = AES.new(key, AES.MODE_CBC, iv)
-            encrypted_bytes = cipher.encrypt(plain)
-
-            encrypted_text = base64.urlsafe_b64encode(encrypted_bytes).decode("utf-8")
-
-            print('Encrypted Text: ' + encrypted_text)
-            conn.send(encrypted_text.encode())
-
+            while True:
+                data = conn.recv(1024)
+                humidity, temperature = Adafruit_DHT.read_retry(11, 4)
+                key='sixteencharacter'
+                plain=str(temperature) + ',' + str(humidity)
+                tal = tal + 1
+                plain = pad(plain)
+                iv = 'jvHJ1XFt0IXBrxxx'
+                cipher = AES.new(key, AES.MODE_CBC, iv)
+                encrypted_bytes = cipher.encrypt(plain)
+                encrypted_text = base64.urlsafe_b64encode(encrypted_bytes).decode("utf-8")
+                print('Encrypted Text: ' + encrypted_text)
+                conn.send(encrypted_text.encode())
         except ConnectionResetError:
             conn.close()
             s.close()
