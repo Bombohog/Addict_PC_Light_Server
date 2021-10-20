@@ -205,23 +205,7 @@ public class ClientForSensorDataGraph extends Application {
         avgForTemperature = avgForTemperatureBeforeDevide/listOfTemperatureValues.size();
     }
 
-    Double decrypt(String stringToDecrypt){
-        try{
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
-            byte[] key;
-            String mykey = "testtesttesttest";
-            key = mykey.getBytes(StandardCharsets.UTF_8);
-            SecretKeySpec secretKeySpec = new SecretKeySpec(key,"AES");
-            cipher.init(Cipher.DECRYPT_MODE,secretKeySpec);
-            return Double.parseDouble(new String(cipher.doFinal(Base64.getDecoder().decode(stringToDecrypt))));
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
-            e.printStackTrace();
-        }
-        return 1.0;
-    }
-
+ 
     public static void main(String[] args) {
         launch(args);
     }
